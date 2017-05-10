@@ -1,4 +1,4 @@
-r <- 0.02
+r <- 0.025
 
 BS <-
   function(S, K, T, r, sig, type="C"){
