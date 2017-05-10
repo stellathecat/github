@@ -1,1 +1,2 @@
-print('check')
+check='check'
+print('check2')
