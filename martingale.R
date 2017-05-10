@@ -13,7 +13,8 @@ martingale = function(v1,v2,v3,increment,betsize,trade_com,version,plot)
   N <- nrow(data)
   level <- coredata(data[1,4]+data[1,8])/2
   initial <- level
-  print(initial)
+  if(class(increment)=='character') increment<-round(level*as.numeric(gsub('%','',increment)),4)
+  print(initial); print(increment)
   outstanding <- 0
   data <- as.data.frame(data)
   ind <- as.list(rownames(data))
