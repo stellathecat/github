@@ -1,10 +1,16 @@
 library(quantmod)
+library(data.table) # ?
 getSymbols("^VIX")
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 #read options data
 spx_data = read.csv("SPX_data.csv", stringsAsFactors=FALSE)
+#spx_data = read.csv("https://www.dropbox.com/s/bucxejlv2attaa0/SPX_data.csv?dl=1", stringsAsFactors=FALSE)
+#If you're on windows try readr::read_csv() instead of read.csv() 
+
 spx_data = spx_data[spx_data$days==30, ]
-spx_data = spx_data[complete.cases(spx_data), ]
+# spx_data = spx_data[complete.cases(spx_data), ] # 0 obs. ?
 spx_data$date = as.Date(as.character(spx_data$date), "%Y%m%d")
 all_dates = unique(spx_data$date)
 
@@ -36,5 +42,8 @@ VIX_replicated$VIX[all_dates %in% index(VIX)] = VIX$VIX.Close[all_dates]
 
 #some plotting
 VIX_to_plot = VIX_replicated[VIX_replicated$Date>="2015-01-01", ]
+
+png('plot.png')
 plot(VIX_to_plot$Date, VIX_to_plot$VIX, type="l", col="green", xlab="", ylab="", ylim=c(0, 50))
 lines(VIX_to_plot$Date, VIX_to_plot$VIX_replicated, type="l", col="blue")
+dev.off()
