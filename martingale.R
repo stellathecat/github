@@ -119,7 +119,7 @@ martingale = function(v1,v2,v3,increment,betsize,trade_com,version,plot)
   M4 <- cumsum(M3)
   M4b <- as.numeric(last(M4))
   
-  # unrealized profits
+  # unrealized profits // this is only an approximation
   M5 <- M2 / 2
   M6 <- apply.daily(data$outstanding, last)
   M7 <- M5 * M6 / M1 # to get p&l in original currency // attention only use for fx
