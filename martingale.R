@@ -26,7 +26,9 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
   {
     new_stack <- trade_stack
     n <- nrow(new_stack)
-    new_stack <- rbind(new_stack, data.frame(datetime = time, operation = operation, price = price, act_price = act_price))
+    new_data <- data.frame(datetime = time, operation = operation, price = price, act_price = act_price)
+    colnames(new_data) <- c("datetime", "operation", "price", "act_price")
+    new_stack <- rbind(new_stack, new_data)
     trade_stack <<- new_stack
   }
   # get trade data from stack
