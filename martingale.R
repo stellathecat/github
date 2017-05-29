@@ -10,6 +10,8 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
   #data=data[paste(input$dates[1], "/", input$dates[2], sep = "")] # new
   data$outstanding <- NA
   data$realized_profit <- 0
+  data$at <- NA
+  
   N <- nrow(data)
   level <- coredata(data[1,4]+data[1,8])/2
   initial <- level
@@ -153,6 +155,8 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
       if (realized_profit > 0) data[[10]][i] <- realized_profit
     } else { # do nothing
     }
+    
+    data[[11]][i] <- level # add level (sold/bought at) for plotting later
     # do some processing in the end of the day
     if (strftime(ind[[i]], format="%H:%M:%S") == "23:59:00") { # process after day end
     }
