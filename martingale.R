@@ -92,7 +92,7 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
       data[[9]][i] <- outstanding # update data
       if (realized_profit > 0) data[[10]][i] <- realized_profit
     }
-    else if (data[[7]][i] <= (level-increment_position)) { # buy
+    else if (data[[7]][i] <= (level-increment_position) && stack_get_last()[, 2]!="sell") { # buy
       
       count_trades <- floor((level-data[[7]][i])/increment_position) # how many times to buy
       realized_profit <- 0 # initialize
@@ -132,7 +132,7 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
       data[[9]][i] <- outstanding # update data
       if (realized_profit > 0) data[[10]][i] <- realized_profit
     } 
-    else if (data[[2]][i] >= (level+increment_position)) { # sell
+    else if (data[[2]][i] >= (level+increment_position) && stack_get_last()[, 2]!="buy") { # sell
       
       count_trades <- floor((data[[2]][i]-level)/increment_position) # how many times to sell
       realized_profit <- 0 # initialize
