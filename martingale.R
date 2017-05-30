@@ -10,7 +10,7 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
   #data=data[paste(input$dates[1], "/", input$dates[2], sep = "")] # new
   data$outstanding <- NA
   data$realized_profit <- 0
-  data$at <- NA
+  #data$at <- NA
   
   N <- nrow(data)
   level <- coredata(data[1,4]+data[1,8])/2
@@ -27,11 +27,19 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
   stack_push <- function(time, operation, price, act_price)
   {
     new_stack <- trade_stack
-    n <- nrow(new_stack)
     new_data <- data.frame(datetime = time, operation = operation, price = price, act_price = act_price)
     colnames(new_data) <- c("datetime", "operation", "price", "act_price")
     new_stack <- rbind(new_stack, new_data)
     trade_stack <<- new_stack
+  }
+  # insert new trade data to history
+  history_push <- function(time, operation, price, act_price)
+  {
+    new_history <- trade_history
+    new_data <- data.frame(datetime = time, operation = operation, price = price, act_price = act_price)
+    colnames(new_data) <- c("datetime", "operation", "price", "act_price")
+    new_history <- rbind(new_history, new_data)
+    trade_history <<- new_history
   }
   # get trade data from stack
   stack_get_last <- function()
@@ -64,6 +72,7 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
   }
   # stack of current unrealized operations
   trade_stack <- data.frame(datetime = numeric(0), operation = character(0), price = numeric(0), act_price = numeric(0), stringsAsFactors=F)
+  trade_history <- trade_stack
   
   # if ask low < indicative level - increment_profit, then close sell positions and update indicative level
   # if ask low < indicative level - increment, then buy and update indicative level
@@ -80,6 +89,7 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
       while (stack_get_last()[, 2]=="sell" && stack_get_last()[, 3]-increment_profit>=data[[7]][i]) {
         last_trade <- stack_pop() # get last sell operation
         realized_profit <- realized_profit + betsize*increment_profit - 2*trade_com
+        history_push(ind[[i]], "buy", last_trade[1]-increment_profit, data[[7]][i])
         outstanding <- outstanding + betsize # update oustanding
       }
       if (stack_get_last()[, 2]=="sell") {
@@ -87,6 +97,7 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
       } else {
         if (data[[7]][i] < (last_trade[1]-increment_profit)) { # after closing all 'sell' positions, new 'buy' position may be opened
           stack_push(ind[[i]], "buy", data[[7]][i], data[[7]][i])
+          history_push(ind[[i]], "buy", data[[7]][i], data[[7]][i])
           outstanding <- outstanding + betsize # update oustanding
         }
         level <- data[[7]][i] # update indicative level
@@ -102,9 +113,11 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
         for (j in 1:count_trades) {
           if (outstanding>=0) { # if no sell oprations, then put to portfolio
             stack_push(ind[[i]], "buy", level-j*increment_position, data[[7]][i])
+            history_push(ind[[i]], "buy", level-j*increment_position, data[[7]][i])
           } else {
             last_trade <- stack_pop() # get last sell operation
             realized_profit <- realized_profit + betsize*(last_trade[1]-(level-j*increment_position)) - 2*trade_com
+            history_push(ind[[i]], "buy", level-j*increment_position, data[[7]][i])
           }
           outstanding <- outstanding + betsize # update oustanding
         }
@@ -120,6 +133,7 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
       while (stack_get_last()[, 2]=="buy" && stack_get_last()[, 3]+increment_profit<=data[[2]][i]) {
         last_trade <- stack_pop() # get last sell operation
         realized_profit <- realized_profit + betsize*increment_profit - 2*trade_com
+        history_push(ind[[i]], "sell", last_trade[1]+increment_profit, data[[2]][i])
         outstanding <- outstanding - betsize # update oustanding
       }
       if (stack_get_last()[, 2]=="buy") {
@@ -127,6 +141,7 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
       } else {
         if (data[[2]][i] > (last_trade[1]+increment_profit)) { # after closing all 'buy' positions, new 'sell' position may be opened
         stack_push(ind[[i]], "sell", data[[2]][i], data[[2]][i])
+        history_push(ind[[i]], "sell", data[[2]][i], data[[2]][i])
         outstanding <- outstanding - betsize # update oustanding
         }
         level <- data[[2]][i] # update indicative level
@@ -143,8 +158,10 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
           if (outstanding>0) { # get last buy operation
             last_trade <- stack_pop() # calculate profit
             realized_profit <- realized_profit + betsize*((level+j*increment_position)-last_trade[1]) - 2*trade_com
+            history_push(ind[[i]], "sell", level+j*increment_position, data[[2]][i])
           } else {
             trade_stack <- stack_push(ind[[i]], "sell", level+j*increment_position, data[[2]][i])
+            history_push(ind[[i]], "sell", level+j*increment_position, data[[2]][i])
             # if no buy oprations, then put to protfolio
           }
           outstanding <- outstanding - betsize # update oustanding
@@ -156,7 +173,7 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
     } else { # do nothing
     }
     
-    data[[11]][i] <- level # add level (sold/bought at) for plotting later
+    #data[[11]][i] <- level # add level (sold/bought at) for plotting later
     # do some processing in the end of the day
     if (strftime(ind[[i]], format="%H:%M:%S") == "23:59:00") { # process after day end
     }
@@ -201,6 +218,11 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
   plot(as.zoo(M[,8]), yaxt='n', ylab='', col='blue', lty='dotted', lwd=2)
   axis(side = 4)
   legend('topleft', c('Underlying','Machine'), cex=0.6, lty=c('solid','dotted'), col=c('red','blue'))
+  
+  trade_history$datetime <- as.POSIXct(as.character(trade_history$datetime))
+  plot.zoo((data[,4]+data[,8])/2, main='', ylab='', xlab='')
+  points(trade_history$datetime[trade_history$operation=="buy"], trade_history$price[trade_history$operation=="buy"], pch='-', col='blue')
+  points(trade_history$datetime[trade_history$operation=="sell"], trade_history$price[trade_history$operation=="sell"], pch='-', col='red')
   }
   
   if(version==1) return(M) # return daily summary of everything
