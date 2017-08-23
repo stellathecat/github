@@ -228,5 +228,5 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
   # if(version==1) return(M) # return daily summary of everything
   # if(version==2) return(data) # return all data
   # if(version==3) return(M4b) # return sum of realized profit
-  return(list(M,data,M4b,trade_history))
+  return(list(M,data,M4b))
 }
