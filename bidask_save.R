@@ -1,4 +1,5 @@
-source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/counter.R")))  
+source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/counter.R")))
+source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/savedl.R")))
 bidask <- function(y,x) {
     timexx <<- gsub('-','',format(y, "%Y-%m-%d %H:%M:%S")); print(paste(timexx,format(Sys.time(), "%X")))
     savexx <<- paste('BA',which(dates==y))
