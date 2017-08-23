@@ -2,8 +2,6 @@ source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/c
 bidask <- function(y,x) {
     timexx <<- gsub('-','',format(y, "%Y-%m-%d %H:%M:%S")); print(paste(timexx,format(Sys.time(), "%X")))
     # savexx <<- paste('BA',which(timex==y))
-    # a <- reqHistoricalData(tws,x,time,'1 min','5 D','0','BID')[,c(1:4)]; Sys.sleep(8); counter()
-    # b <- reqHistoricalData(tws,x,time,'1 min','5 D','0','ASK')[,c(1:4)]; Sys.sleep(8); counter()
     # a <- savedl(reqHistoricalData(tws,x,timexx,'1 min','5 D','0','BID')[,c(1:4)]); counter()
     # b <- savedl(reqHistoricalData(tws,x,timexx,'1 min','5 D','0','ASK')[,c(1:4)]); counter()
     a <- reqHistoricalData(tws,x,timexx,'1 min','5 D','0','BID')[,c(1:4)]; Sys.sleep(5); counter()
