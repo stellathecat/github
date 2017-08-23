@@ -3,7 +3,7 @@
 # change profit taking
 # change type: fx vs. stocks (transaction costs)
 
-martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade_com,version,plot)
+martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade_com,plot=0)
 {
   data=v1[paste(v2, "/", v3, sep = "")]
   #data=get(x)
@@ -225,7 +225,8 @@ martingale = function(v1,v2,v3,increment_position,increment_profit,betsize,trade
   points(trade_history$datetime[trade_history$operation=="sell"], trade_history$price[trade_history$operation=="sell"], pch='-', col='red')
   }
   
-  if(version==1) return(M) # return daily summary of everything
-  if(version==2) return(data) # return all data
-  if(version==3) return(M4b) # return sum of realized profit
-}  
+  # if(version==1) return(M) # return daily summary of everything
+  # if(version==2) return(data) # return all data
+  # if(version==3) return(M4b) # return sum of realized profit
+  return(list(M,data,M4b,trade_history))
+}
