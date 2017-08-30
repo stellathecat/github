@@ -17,7 +17,7 @@ bidask <- function(y,x) {
 bidask2 <- function(x,DateTime=gsub('-','',format(Sys.Date(), "%Y-%m-%d %H:%M:%S"))) {
     if(class(DateTime)=='Date') DateTime <- gsub('-','',format(DateTime, "%Y-%m-%d %H:%M:%S"))
     print(paste(DateTime, format(Sys.time(), "%X")))
-    a <- savedl(x,DateTime,whatToShow='ASK')[,c(1:4)]; counter()
+    a <- savedl(x,DateTime,whatToShow='BID')[,c(1:4)]; counter()
     b <- savedl(x,DateTime,whatToShow='ASK')[,c(1:4)]; counter()
     yy <- cbind(a,b) # works because a and b do EXIST (but maybe NULL)
     if(is.null(a)) yy <- cbind(NA,NA,NA,NA,b)
