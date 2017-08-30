@@ -12,7 +12,7 @@ savedl <- function(func) {
       # print(paste(store, c$message))
       # warn <<- append(warn, paste(store, c$message))
       print(paste(timexx, c$message))
-      warn <<- append(warn, paste(savexx, timexx, c$message))
+      warn <<- append(warn, paste(savexx, timexx, c$message)) # savexx defined in bidask and reqhis 
       if(grepl('Connectivity',c$message)) success <<- FALSE
       if(grepl('No security definition',c$message)) success <<- FALSE
     })
