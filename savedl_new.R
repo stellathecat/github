@@ -5,7 +5,7 @@ savedl <- function(Contract, endDateTime=gsub('-','',format(Sys.Date(), "%Y-%m-%
     success <- TRUE 
     xx <- tryCatch(reqHistoricalData(tws, Contract, endDateTime, barSize, duration='5 D', useRTH='0', whatToShow), 
                    warning = function(c) { 
-      print(paste(endDateTime, c$message))
+      print(paste(substr(endDateTime, 1, 8), c$message))
       if(!exists('warn')) warn <<- NULL
       warn <<- append(warn, paste(substr(endDateTime, 1, 8), whatToShow, c$message))
       if(grepl('Connectivity',c$message)) success <<- FALSE
