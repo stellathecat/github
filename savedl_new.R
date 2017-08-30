@@ -3,7 +3,7 @@ savedl <- function(Contract, endDateTime=gsub('-','',format(Sys.Date(), "%Y-%m-%
   success <- FALSE
   while (!success) {
     success <- TRUE 
-    xx <- tryCatch(reqHistoricalData(tws, Contract, endDateTime, barSize, duration='5 D', useRTH='0', whatToShow), 
+    xx <- tryCatch(reqHistoricalData(tws, Contract, endDateTime, barSize, duration, useRTH, whatToShow), 
                    warning = function(c) { 
       print(paste(substr(endDateTime, 1, 8), c$message))
       if(!exists('warn')) warn <<- NULL
