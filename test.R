@@ -12,3 +12,5 @@ martingale(test,'2015','2016','0.015%',100000,0,2,1)
 # ret <- sum(checkhowmuch$realized_profit != 0)/length(unique(as.Date(index(test))))
 # print(ret)
 # }
+
+# miau
