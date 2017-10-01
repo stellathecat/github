@@ -26,6 +26,6 @@ download_daily_vol <- function(x,option=NULL,sys.sleep=NULL,save=NULL) {
   if(is.null(data1)) data1 <- NA
   if(is.null(data2)) data2 <- NA
   data <- cbind(data1,data2)
-  index(data) <- as.Date(index(data), tz='Europe/Berlin')
+  try(index(data) <- as.Date(index(data), tz='Europe/Berlin'))
   return(data)
 }
