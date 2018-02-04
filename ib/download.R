@@ -5,6 +5,20 @@ source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/i
 source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/ib/counter.R")), local = .ib)
 source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/ib/savedl.R")), local = .ib)
 
+.ib$listbidask <- function(x) {
+  dates <- finddates(x)
+  temp <- lapply(dates, function(y) bidask(x, y, Sys.sleep=1))
+  classx <- function(x) { class(x)[1] }
+  where <- which(lapply(temp, classx)!='xts')
+  print(paste('no data in list',where)) # put this in warning vector somehow
+  temp[where] <- NULL
+  temp2 <- do.call(rbind, temp) 
+  temp2 <- temp2[ ! duplicated( index(temp2) ),  ] # should not be the case
+  indexTZ(temp2) <- 'EST5EDT'
+  if(class(x)=='character') saveRDS(temp2, paste0(x,'.rds'))
+  if(class(x)!='character') saveRDS(temp2, paste0(x$local,'.rds'))
+}
+
 .ib$bidask <- function(x, # first argument = contract
                        DateTime=gsub('-','',format(Sys.Date(), "%Y-%m-%d %H:%M:%S")),
                        barSize='1 min',duration='5 D',Sys.sleep=1,option='NOSAVE') {
