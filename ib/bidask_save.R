@@ -1,8 +1,10 @@
 # 2018
-source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/counter.R")))
-source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/xdates.R")))  
-# source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/savedl.R")))
-source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/savedl_new.R")))
+if(!exists(".ib", mode="environment")) .ib <- new.env()
+
+source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/ib/finddates.R")))
+source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/ib/counter.R")))
+source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/ib/savedl.R")))
+
 bidask <- function(y,x) {
     timexx <<- gsub('-','',format(y, "%Y-%m-%d %H:%M:%S")); print(paste(timexx,format(Sys.time(), "%X")))
     savexx <<- paste('BA',which(dates==y))
