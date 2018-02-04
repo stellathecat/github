@@ -1,4 +1,8 @@
-savedl <- function(Contract, endDateTime=gsub('-','',format(Sys.Date(), "%Y-%m-%d %H:%M:%S")), 
+if(!exists(".ib", mode="environment")) .ib <- new.env()
+if(!exists(".hidden", mode="environment")) .hidden <- new.env()
+if(!exists('warn', envir = .hidden)) .hidden$warn <- NULL
+
+.ib$savedl <- function(Contract, endDateTime=gsub('-','',format(Sys.Date(), "%Y-%m-%d %H:%M:%S")), 
                    barSize='1 min', duration='5 D', useRTH='0', whatToShow='TRADES', Sys.sleep=0) {
   success <- FALSE
   while (!success) {
@@ -6,8 +10,7 @@ savedl <- function(Contract, endDateTime=gsub('-','',format(Sys.Date(), "%Y-%m-%
     xx <- tryCatch(reqHistoricalData(tws, Contract, endDateTime, barSize, duration, useRTH, whatToShow), 
                    warning = function(w) { 
       print(paste(substr(endDateTime, 1, 8), w$message))
-      if(!exists('warn')) warn <<- NULL
-      warn <<- append(warn, paste(substr(endDateTime, 1, 8), whatToShow, w$message))
+      .hidden$warn <- append(.hidden$warn, paste(substr(endDateTime, 1, 8), whatToShow, w$message))
       if(grepl('Connectivity',w$message)) { success <<- FALSE; Sys.sleep(20); twsDisconnect(tws); Sys.sleep(20); tws <<- ibgConnect() }
       if(grepl('No security definition',w$message)) { success <<- FALSE; Sys.sleep(20); twsDisconnect(tws); Sys.sleep(20); tws <<- ibgConnect() }
       # if(grepl('Historical Market Data Service',w$message)) {  }
@@ -26,7 +29,7 @@ savedl <- function(Contract, endDateTime=gsub('-','',format(Sys.Date(), "%Y-%m-%
 #   # asdasd <<- as.list(match.call())
 #   # test <<- match.call()
 #   # test <<- deparse(substitute(func))
-#   # test2 <<- get('time', mode='character') funktioniert nicht
+#   # test2 <<- get('time', mode='character') # does not work
 #   success <- FALSE
 #   store <- deparse(match.call(), width.cutoff = 500L, nlines=1)
 #   store <- gsub('"','',substr(store, 38, nchar(store)-2))
