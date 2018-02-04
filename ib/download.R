@@ -31,7 +31,7 @@ source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/i
   if(option=='NOSAVE') a <- reqHistoricalData(tws,Contract=x,endDateTime=DateTime,barSize=barSize,duration=duration,useRTH='0',whatToShow='BID')[,c(1:4)]
   counter()
   Sys.sleep(Sys.sleep)
-  if(option!='NOSAVE') b <- savedl(x,DateTime,whatToShow='ASK',Sys.sleep=Sys.sleep)[,c(1:4)]; counter()
+  if(option!='NOSAVE') b <- savedl(x,DateTime,whatToShow='ASK',Sys.sleep=Sys.sleep)[,c(1:4)]
   if(option=='NOSAVE') b <- reqHistoricalData(tws,Contract=x,endDateTime=DateTime,barSize=barSize,duration=duration,useRTH='0',whatToShow='ASK')[,c(1:4)]
   counter()
   Sys.sleep(Sys.sleep)
