@@ -1,3 +1,4 @@
+# 2018
 source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/counter.R")))
 source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/xdates.R")))  
 # source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/savedl.R")))
@@ -28,13 +29,16 @@ bidask2 <- function(x,DateTime=gsub('-','',format(Sys.Date(), "%Y-%m-%d %H:%M:%S
 }
 
 bidask2nosave <- function(x,DateTime=gsub('-','',format(Sys.Date(), "%Y-%m-%d %H:%M:%S")),
-                          barSize='1 min',duration='5 D',Sys.sleep=2) {
+                          barSize='1 min',duration='5 D',Sys.sleep=1) {
   if(class(DateTime)=='Date') DateTime <- gsub('-','',format(DateTime, "%Y-%m-%d %H:%M:%S"))
   if(class(x)=='character') x <- twsEquity(x)
   print(paste(x$symbol, substr(DateTime, 1, 8), format(Sys.time(), "%X"))) # x$ticker -> x$symbol
-  # 
-  a <- reqHistoricalData(tws,Contract=x,endDateTime=DateTime,barSize=barSize,duration=duration, useRTH='0',whatToShow='BID')[,c(1:4)]; counter()
-  b <- reqHistoricalData(tws,Contract=x,endDateTime=DateTime,barSize=barSize,duration=duration, useRTH='0',whatToShow='ASK')[,c(1:4)]; counter()
+  # where is the sys.sleep?
+  a <- b <- NULL
+  a <- reqHistoricalData(tws,Contract=x,endDateTime=DateTime,barSize=barSize,duration=duration,useRTH='0',whatToShow='BID')[,c(1:4)]; counter()
+  Sys.sleep(Sys.sleep)
+  b <- reqHistoricalData(tws,Contract=x,endDateTime=DateTime,barSize=barSize,duration=duration,useRTH='0',whatToShow='ASK')[,c(1:4)]; counter()
+  Sys.sleep(Sys.sleep)
   yy <- cbind(a,b) # works because a and b do EXIST (but maybe NULL)
   if(is.null(a)) yy <- cbind(NA,NA,NA,NA,b)
   if(is.null(b)) yy <- cbind(a,NA,NA,NA,NA)
