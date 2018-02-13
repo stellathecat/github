@@ -1,4 +1,4 @@
-if(!exists(".ib", mode="environment")) .ib <- new.env()
+# if(!exists(".ib", mode="environment")) .ib <- new.env()
 
 .ib$finddates = function(x, type='BID') { 
   if(class(x)=='character') x <- twsEquity(x)

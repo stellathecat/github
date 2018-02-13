@@ -1,4 +1,5 @@
 if(!exists(".ib", mode="environment")) .ib <- new.env()
+if(!exists(".ic", mode="environment")) .ic <- new.env()
 if(!exists(".hidden", mode="environment")) .hidden <- new.env()
 
 .ib$counter <- function() { 

@@ -1,4 +1,4 @@
-if(!exists(".ib", mode="environment")) .ib <- new.env()
+# if(!exists(".ib", mode="environment")) .ib <- new.env() # MUST exist?
 if(!exists(".hidden", mode="environment")) .hidden <- new.env()
 if(!exists('warn', envir = .hidden)) .hidden$warn <- NULL
 
@@ -11,10 +11,13 @@ if(!exists('warn', envir = .hidden)) .hidden$warn <- NULL
                    warning = function(w) { 
       print(paste(substr(endDateTime, 1, 8), w$message))
       .hidden$warn <- append(.hidden$warn, paste(substr(endDateTime, 1, 8), whatToShow, w$message))
-      if(grepl('Connectivity',w$message)) { success <<- FALSE; Sys.sleep(20); twsDisconnect(tws); Sys.sleep(20); tws <<- ibgConnect() }
-      if(grepl('No security definition',w$message)) { success <<- FALSE; Sys.sleep(20); twsDisconnect(tws); Sys.sleep(20); tws <<- ibgConnect() }
+      if(grepl('Connectivity',w$message)) { 
+        success <<- FALSE; Sys.sleep(20); twsDisconnect(tws); Sys.sleep(20); tws <<- ibgConnect() }
+      if(grepl('No security definition',w$message)) { 
+        success <<- FALSE; Sys.sleep(20); twsDisconnect(tws); Sys.sleep(20); tws <<- ibgConnect() }
       # if(grepl('Historical Market Data Service',w$message)) {  }
-      if(grepl('Error processing request',w$message)) { success <<- FALSE; Sys.sleep(20); twsDisconnect(tws); Sys.sleep(20); tws <<- ibgConnect() }
+      if(grepl('Error processing request',w$message)) { 
+        success <<- FALSE; Sys.sleep(20); twsDisconnect(tws); Sys.sleep(20); tws <<- ibgConnect() }
       Sys.sleep(1)
     #}, error = function(e) { print('fritz'); success <<- FALSE; Sys.sleep(20); twsDisconnect(tws); Sys.sleep(20); tws <- ibgConnect() })
       })
