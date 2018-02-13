@@ -5,18 +5,55 @@ source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/i
 source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/ib/counter.R")), local = .ib)
 source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/ib/savedl.R")), local = .ib)
 
-.ib$listbidask <- function(x) {
-  dates <- finddates(x)
-  temp <- lapply(dates, function(y) bidask(x, y, Sys.sleep=1))
+.ib$listformbind <- function(data) #,whereall=NULL,where=NULL,files=NULL,saveas=NULL,tz='EST5EDT') # do this later
+{
   classx <- function(x) { class(x)[1] }
-  where <- which(lapply(temp, classx)!='xts')
-  print(paste('no data in list',where)) # put this in warning vector somehow
-  temp[where] <- NULL
-  temp2 <- do.call(rbind, temp) 
-  temp2 <- temp2[ ! duplicated( index(temp2) ),  ] # should not be the case
-  indexTZ(temp2) <- 'EST5EDT'
-  if(class(x)=='character') saveRDS(temp2, paste0(x,'.rds'))
-  if(class(x)!='character') saveRDS(temp2, paste0(x$local,'.rds'))
+  bind <- function(z) {
+    where <<- which(lapply(z, classx)!='xts')
+    if(length(where)==0) print('all lists completed') # https://stackoverflow.com/questions/6451152/how-to-catch-integer0
+    if(length(where)!=0) print(paste('no data in list',where)) # put this in warning vector somehow
+    z[where] <- NULL
+    temp2 <- do.call(rbind, z) 
+    temp2 <- temp2[ ! duplicated( index(temp2) ),  ] # should not be the case
+    indexTZ(temp2) <- 'EST5EDT'
+    return(temp2)
+  }
+  
+  final <- bind(data)
+  # if(!is.null(where)) dat <- lapply(paste0(where,files,'.rds'), readRDS)
+  # if(!is.null(whereall)) dat <- lapply(list.files(whereall), readRDS)
+  
+  name_extract <- gsub('.Open','',colnames(final)[1])
+  # if(class(x)=='character') saveRDS(temp2, paste0(x,'.rds'))
+  # if(class(x)!='character') {
+  #   if(x$local=='') saveRDS(temp2, paste0(x$symbol,format(Sys.time(), '%H-%M'),'.rds'))
+  #   if(x$local!='') saveRDS(temp2, paste0(x$local,'.rds'))
+  # }
+  saveRDS(final, paste0(name_extract,'_miau.rds'))
+}
+
+.ib$listbidask <- function(x,Sys.sleep=0,dates=NULL,save=NULL) {
+  if(is.null(dates)) dates <- tryCatch(finddates(x), error = function(e) return(NULL))
+  if(is.null(dates)) return(NULL) # and skip
+  
+  if(is.null(save)) temp2 <- lapply(dates, function(y) .ib$bidask(x, y, Sys.sleep=Sys.sleep))
+  if(!is.null(save)) temp2 <- lapply(dates, function(y) .ib$bidask(x, y, Sys.sleep=Sys.sleep, option='SAVE'))
+  
+  ### IF
+  # classx <- function(x) { class(x)[1] }
+  # where <- which(lapply(temp, classx) != 'xts')
+  # print(paste('no data in list', where)) # put this in warning vector somehow
+  # temp[where] <- NULL
+  # temp2 <- do.call(rbind, temp)
+  # temp2 <- temp2[!duplicated(index(temp2)),] # should not be the case
+  # indexTZ(temp2) <- 'EST5EDT'
+  ### IF
+  
+  if(class(x)=='character') saveRDS(temp2, paste0(x,'_listform.rds'))
+  if(class(x)!='character') {
+    if(x$local=='') saveRDS(temp2, paste0(x$symbol,format(Sys.time(), '%H-%M'),'_listform.rds'))
+    if(x$local!='') saveRDS(temp2, paste0(x$local,'_listform.rds'))
+  }
 }
 
 .ib$bidask <- function(x, # first argument = contract
@@ -26,6 +63,7 @@ source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/i
   if(class(x)=='character') x <- twsEquity(x)
   print(paste(x$symbol, substr(DateTime, 1, 8), format(Sys.time(), "%X"))) # x$ticker -> x$symbol
   # where is the sys.sleep?
+  print(Sys.sleep)
   a <- b <- NULL
   if(option!='NOSAVE') a <- savedl(x,DateTime,whatToShow='BID',Sys.sleep=Sys.sleep)[,c(1:4)]
   if(option=='NOSAVE') a <- reqHistoricalData(tws,Contract=x,endDateTime=DateTime,barSize=barSize,duration=duration,useRTH='0',whatToShow='BID')[,c(1:4)]

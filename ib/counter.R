@@ -1,7 +1,7 @@
-if(!exists(".ib", mode="environment")) .ib <- new.env()
-if(!exists(".ib", mode="environment")) .ic <- new.env()
-if(!exists(".ib", mode="environment", inherits = TRUE)) .id <- new.env()
-if(!exists(".hidden", mode="environment")) .hidden <- new.env()
+# if(!exists(".ib", mode="environment", inherits = TRUE)) .ib <- new.env()
+# if(!exists(".ib", mode="environment")) .ic <- new.env()
+# if(!exists(".ib", mode="environment", inherits = TRUE)) .id <- new.env()
+# if(!exists(".hidden", mode="environment")) .hidden <- new.env()
 
 .ib$counter <- function() { 
   if(!exists('count', envir = .hidden)) { .hidden$count <- 0; .hidden$j <- Sys.time() }
