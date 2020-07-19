@@ -1,9 +1,13 @@
 require(xts)
 source(gzcon(url("https://raw.githubusercontent.com/stellathecat/github/master/martingale.R")))
-test=readRDS(gzcon(url("https://dl.dropboxusercontent.com/s/uo19beaq2lw0lii/EURCHF2016.rds"))) 
+# test=readRDS(gzcon(url("https://dl.dropboxusercontent.com/s/uo19beaq2lw0lii/EURCHF2016.rds"))) # OLD FROM 2017
+# test=readRDS(gzcon(url("https://dl.dropboxusercontent.com/s/sf54jeg4m4awj8u/EURCHF2016.rds"))) # error
+test <- readRDS(url('https://www.dropbox.com/s/sf54jeg4m4awj8u/EURCHF2016.rds?dl=1')) # funktioniert (manchmal?)
+test <- readRDS('~/Dropbox/stellathecat/data/EURCHF2016.rds')
 
 # martingale(test,'2015','2016',0.0163,100000,0,2,1)
 martingale(test,'2015','2016','0.015%',100000,0,2,1)
+x <- martingale(test,'2015','2016','0.015%',100000,0,2,1)
 
 # little test
 # for (i in c(1:30)) {
