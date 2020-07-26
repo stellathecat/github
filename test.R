@@ -152,3 +152,11 @@ x1$outstanding
 ### LEARN
 # GGHIGHLIGHT
 
+require(QCAM)
+plot_double(x1$last, x1$outstanding)
+# legend('top',c('EURCHF','Outstanding'),lty=c(1,1),col=1:2) # outside
+plot.zoo(x1[,c('outstanding','unrealized pnl')], plot.type = 'single', col=1:2)
+plot_double(x1[,c('outstanding','unrealized pnl')])
+3000000*0.030/2
+x1
+x1
