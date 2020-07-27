@@ -1,5 +1,6 @@
-loc <- 'C:/Users/felix.dietrich/Dropbox/Public/2020/'
+loc <- 'C:/Users/felix.dietrich/Dropbox/Public/2020/ToDo/'
 a <- list.files(loc)
+a
 b <- a # [1:1000]
 
 by <- unlist(lapply(strsplit(b, '_'), function(x) x[1]))
@@ -119,21 +120,45 @@ x <- readRDS(paste0(loc, as.character(12087797), '.rds'))
 x
 loc
 x <- readRDS('C:/Users/felix.dietrich/Dropbox/Public/2020/12087817.rds') # EURCHF
-x <- readRDS('C:/Users/felix.dietrich/Dropbox/Public/2020/Without_Attributes/12087817.rds') # EURCHF
+x <- readRDS('C:/Users/felix.dietrich/Dropbox/Public/2020/Without_Attributes/12087807.rds') 
+head(x)
 
 xtsAttributes()
 
 ###
 
 listed <- list()
+asd
+xxx <- lapply(ticker, function(x) {
+  xx <- try(readRDS(paste0(loc, as.character(x), '.rds')), silent = T)
+  if(!exists('xx')) return(NULL)
+  do.call(cbind, xtsAttributes(xx)[c('base_currency','quote_currency')])
+})
+names(xxx) <- asd
 
-lapply(ticker)
-for (i in ticker) {
-  print(i)
-  x <- try(readRDS(paste0(loc, as.character(i), '.rds')))
-  if(!exists('x')) next
-  listed[i] <- xtsAttributes(x)[c('base_currency','quote_currency')]
-  rm(x)
-}
-listed
-exists
+asd
+xxx
+lapply(xxx, function(x) paste(x, collapse=''))
+test <- xxx[[1]]
+
+
+xxxx <- lapply(xxx, function(x) {
+  # list(xts::last(y[[paste(paste(x, collapse = ""), 'V1M Curncy', sep="")]]),
+  #       xts::last(y[[paste(paste(x[2], x[1], sep = ""), 'V1M Curncy', sep="")]]))
+  xts::last(y[[paste(paste(x, collapse = ""), 'V1M Curncy', sep="")]])
+})
+xts::last(y[[paste(paste(test, collapse = ""), 'V1M Curncy', sep="")]])
+paste(paste(test[2], test[1], sep = ""), 'V1M Curncy', sep="")
+
+xxxx[[sapply(xxxx, is.null)]]
+xxxx
+
+###
+
+bidask(getContract('12087807', include_expired = 0))
+
+x <- getContract('14321016', include_expired = 0)
+temp <- lapply(dates, function(y) bidask(x, y, Sys.sleep=0, saveRDS=T))
+
+reqContractDetails(tws, twsCurrency('CAD','CHF'))
+downl
