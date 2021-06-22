@@ -1,4 +1,6 @@
-loc <- 'C:/Users/felix.dietrich/Dropbox/Public/2020/ToDo/'
+loc <- 'C:/Users/felix.dietrich/Dropbox/Public/2020/ToDo2/'
+loc <- 'C:/Users/felix.dietrich/Dropbox/Public/2020/Without_Attributes/'
+
 a <- list.files(loc)
 a
 b <- a # [1:1000]
@@ -106,6 +108,8 @@ diff(log(range(check[[1]][,1])))
 
 ###
 
+ticker <- 15016234
+### ADD ATTRIBUTES
 for (i in ticker) {
   print(i)
   x <- readRDS(paste0(loc, as.character(i), '.rds')) 
@@ -128,25 +132,36 @@ xtsAttributes()
 ###
 
 listed <- list()
-asd
+loc <- 'C:/Users/felix.dietrich/Dropbox/Public/2020/'
+
 xxx <- lapply(ticker, function(x) {
+  print(x)
   xx <- try(readRDS(paste0(loc, as.character(x), '.rds')), silent = T)
   if(!exists('xx')) return(NULL)
   do.call(cbind, xtsAttributes(xx)[c('base_currency','quote_currency')])
 })
 names(xxx) <- asd
+xxx
+xx <- readRDS(paste0(loc, as.character(15016234), '.rds'))
+tail(xx)
 
 asd
 xxx
 lapply(xxx, function(x) paste(x, collapse=''))
 test <- xxx[[1]]
 
+xxx
 
 xxxx <- lapply(xxx, function(x) {
   # list(xts::last(y[[paste(paste(x, collapse = ""), 'V1M Curncy', sep="")]]),
   #       xts::last(y[[paste(paste(x[2], x[1], sep = ""), 'V1M Curncy', sep="")]]))
-  xts::last(y[[paste(paste(x, collapse = ""), 'V1M Curncy', sep="")]])
+  # xts::last(y[[paste(paste(x, collapse = ""), 'V1M Curncy', sep="")]])
+  cbind(median(y[[paste(paste(x, collapse = ""), 'V1M Curncy', sep="")]]['2019-12-30/2020-01-02']),
+        median(fdb(paste0(x[1], 'USD Curncy'), start.date = "2019-12-31")['2019-12-30/2020-01-02']))
 })
+xxxx
+saveRDS(xxxx, 'maschine_backtest_calibrations.rds')
+
 xts::last(y[[paste(paste(test, collapse = ""), 'V1M Curncy', sep="")]])
 paste(paste(test[2], test[1], sep = ""), 'V1M Curncy', sep="")
 
@@ -158,7 +173,12 @@ xxxx
 bidask(getContract('12087807', include_expired = 0))
 
 x <- getContract('14321016', include_expired = 0)
+x <- getContract('15016234', include_expired = 0)
 temp <- lapply(dates, function(y) bidask(x, y, Sys.sleep=0, saveRDS=T))
 
 reqContractDetails(tws, twsCurrency('CAD','CHF'))
-downl
+
+###
+
+fdb('NOKUSD Curncy', 'PX_LAST', start.date = "2019-12-31")
+fdb
